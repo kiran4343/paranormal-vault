@@ -14,7 +14,7 @@ import {
   Undo, 
   Redo, 
   Image as ImageIcon,
-  Youtube as YoutubeIcon,
+  Video as YoutubeIcon,
   Heading1,
   Heading2
 } from "lucide-react"

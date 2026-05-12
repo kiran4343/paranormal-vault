@@ -1,37 +1,37 @@
--- Paranormal Vault Database Schema
+-- Paranormal Vault Database Schema (Corrected Order)
 
--- Investigations
-CREATE TABLE investigations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  title TEXT NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-  summary TEXT,
-  content JSONB, -- For rich text/builder data
-  featured_image TEXT,
-  location_id UUID REFERENCES locations(id),
-  status TEXT DEFAULT 'published', -- draft, published, archived
-  published_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  evidence_gallery TEXT[], -- Array of media URLs
-  video_url TEXT,
-  audio_url TEXT
-);
-
--- Locations
+-- 1. Locations (Must be created first because Investigations references it)
 CREATE TABLE locations (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
   description TEXT,
-  haunting_type TEXT, -- poltergeist, residual, intelligent, etc.
+  haunting_type TEXT, 
   coordinates POINT,
   address TEXT,
   history TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Stories (Community Submissions)
+-- 2. Investigations
+CREATE TABLE investigations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  summary TEXT,
+  content JSONB, 
+  featured_image TEXT,
+  location_id UUID REFERENCES locations(id),
+  status TEXT DEFAULT 'published', 
+  published_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  evidence_gallery TEXT[], 
+  video_url TEXT,
+  audio_url TEXT
+);
+
+-- 3. Stories (Community Submissions)
 CREATE TABLE stories (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE stories (
   media_urls TEXT[]
 );
 
--- Team
+-- 4. Team
 CREATE TABLE team (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
@@ -54,18 +54,18 @@ CREATE TABLE team (
   order_index INTEGER DEFAULT 0
 );
 
--- Podcasts/Videos
+-- 5. Podcasts/Videos
 CREATE TABLE media_content (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   title TEXT NOT NULL,
-  type TEXT, -- podcast, video
+  type TEXT, 
   url TEXT NOT NULL,
   thumbnail TEXT,
   description TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Settings
+-- 6. Settings
 CREATE TABLE site_settings (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   key TEXT UNIQUE NOT NULL,
