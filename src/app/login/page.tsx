@@ -4,19 +4,32 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { Ghost, Lock, User, ShieldAlert } from "lucide-react"
 import Link from "next/link"
+import { createClient } from "@/lib/supabase/client"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  
+  const supabase = createClient()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    // Simulate auth
-    setTimeout(() => {
+    setError(null)
+    
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    if (error) {
+      setError(error.message)
+      setIsLoading(false)
+    } else {
       window.location.href = "/admin"
-    }, 1500)
+    }
   }
 
   return (
@@ -37,6 +50,11 @@ export default function LoginPage() {
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
+          {error && (
+            <div className="p-4 bg-red-500/10 border border-red-500/50 text-red-500 text-xs text-center rounded">
+              {error}
+            </div>
+          )}
           <div className="relative">
             <User className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
             <input 

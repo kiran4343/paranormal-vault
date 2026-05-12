@@ -26,8 +26,16 @@ const adminLinks = [
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ]
 
+import { createClient } from "@/lib/supabase/client"
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const supabase = createClient()
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    window.location.href = "/login"
+  }
 
   return (
     <div className="min-h-screen bg-[#020202] text-white flex">
@@ -76,7 +84,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Eye size={20} />
             {!isCollapsed && <span className="text-sm">View Website</span>}
           </Link>
-          <button className="w-full flex items-center gap-4 px-4 py-3 text-muted-foreground hover:text-red-500 transition-all">
+          <button 
+            onClick={handleLogout}
+            className="w-full flex items-center gap-4 px-4 py-3 text-muted-foreground hover:text-red-500 transition-all"
+          >
             <LogOut size={20} />
             {!isCollapsed && <span className="text-sm">Logout</span>}
           </button>
